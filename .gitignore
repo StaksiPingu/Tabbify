@@ -1,0 +1,45 @@
+# Gradle
+.gradle/
+build/
+*.gradle.kts.bak
+
+# Android
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# macOS
+.DS_Store
+
+# Environment
+.env
+*.env.local
+
+# Node (for webApp build artifacts)
+node_modules/
+dist/
+
+# Backend
+backend/build/
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# SQLite
+*.db
+*.sqlite
+
+# Docker
+.docker/
