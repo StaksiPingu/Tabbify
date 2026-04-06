@@ -2,11 +2,18 @@
 FROM gradle:8.8-jdk21 AS builder
 
 WORKDIR /build
-COPY settings.gradle.kts build.gradle.kts gradle/ ./
-COPY gradle/ gradle/
-COPY backend/ backend/
 
-RUN gradle :backend:installDist --no-daemon --stacktrace
+# 1. Nur Build-Config kopieren → eigener Cache-Layer für Dependencies
+COPY settings.gradle.kts build.gradle.kts ./
+COPY gradle/ gradle/
+COPY backend/build.gradle.kts backend/
+
+# 2. Dependencies separat herunterladen → wird gecacht solange build.gradle.kts gleich bleibt
+RUN gradle :backend:dependencies --no-daemon -q 2>/dev/null || true
+
+# 3. Quellcode kopieren + bauen
+COPY backend/src/ backend/src/
+RUN gradle :backend:installDist --no-daemon
 
 # ── Stage 2: Runtime ───────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine
