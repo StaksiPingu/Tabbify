@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.tabbify.server.config.JwtConfig
 import com.tabbify.server.model.Users
 import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

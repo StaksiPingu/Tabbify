@@ -3,6 +3,7 @@ package com.tabbify.server.routing
 import com.tabbify.server.model.Songs
 import com.tabbify.server.model.Tracks
 import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
@@ -12,6 +13,7 @@ import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
@@ -127,8 +129,10 @@ fun Route.songsRouting() {
 
             val deleted = transaction {
                 Songs.deleteWhere {
-                    (Songs.id eq UUID.fromString(songId)) and
-                    (Songs.userId eq UUID.fromString(userId))
+                    Op.build {
+                        (Songs.id eq UUID.fromString(songId)) and
+                        (Songs.userId eq UUID.fromString(userId))
+                    }
                 }
             }
 
