@@ -16,11 +16,19 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.tabbify.data.remote.TabbifyApiClient
+import com.tabbify.data.remote.TokenStorage
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 class AuthScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val apiClient = koinInject<TabbifyApiClient>()
+        val tokenStorage = koinInject<TokenStorage>()
+        val scope = rememberCoroutineScope()
+
         var isLogin by remember { mutableStateOf(true) }
         var email by remember { mutableStateOf("") }
         var username by remember { mutableStateOf("") }
@@ -116,7 +124,26 @@ class AuthScreen : Screen {
 
                 Button(
                     onClick = {
-                        // TODO: inject and call TabbifyApiClient
+                        scope.launch {
+                            isLoading = true
+                            errorMsg = null
+                            val result = if (isLogin) {
+                                apiClient.login(email.trim(), password)
+                            } else {
+                                apiClient.register(email.trim(), username.trim(), password)
+                            }
+                            result.fold(
+                                onSuccess = { auth ->
+                                    tokenStorage.setToken(auth.token)
+                                    tokenStorage.setUserId(auth.userId)
+                                    navigator.pop()
+                                },
+                                onFailure = { e ->
+                                    errorMsg = e.message ?: "Fehler beim Anmelden"
+                                }
+                            )
+                            isLoading = false
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
