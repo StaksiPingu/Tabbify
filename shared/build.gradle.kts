@@ -18,11 +18,6 @@ kotlin {
         }
     }
 
-    js(IR) {
-        browser()
-        binaries.executable()
-    }
-
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -66,10 +61,6 @@ kotlin {
             // TarsosDSP — Pitch & Onset-Erkennung (hosted on mvn.0110.be)
             implementation(libs.tarsos.dsp.core)
             implementation(libs.tarsos.dsp.android)
-        }
-
-        jsMain.dependencies {
-            implementation(libs.ktor.client.js)
         }
 
         commonTest.dependencies {
