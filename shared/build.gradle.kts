@@ -58,9 +58,6 @@ kotlin {
             implementation(libs.vico.compose)
             implementation(libs.vico.compose.m3)
             implementation(libs.vico.core)
-            // TarsosDSP — Pitch & Onset-Erkennung (hosted on mvn.0110.be)
-            implementation(libs.tarsos.dsp.core)
-            implementation(libs.tarsos.dsp.android)
         }
 
         commonTest.dependencies {
