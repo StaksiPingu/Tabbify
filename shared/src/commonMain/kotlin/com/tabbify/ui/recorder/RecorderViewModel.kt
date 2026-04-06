@@ -3,6 +3,9 @@ package com.tabbify.ui.recorder
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.benasher44.uuid.uuid4
+import com.tabbify.data.model.InstrumentType
+import com.tabbify.data.model.Track
+import com.tabbify.data.repository.SongRepository
 import com.tabbify.platform.AudioEngine
 import com.tabbify.platform.StorageManager
 import kotlinx.coroutines.Job
@@ -16,13 +19,15 @@ data class RecorderState(
     val durationMs: Long = 0L,
     val waveform: List<Float> = List(60) { 0f },
     val lastRecordingPath: String? = null,
+    val lastTrackId: String? = null,
     val takeCount: Int = 0
 )
 
 class RecorderViewModel(
     private val songId: String,
     private val audioEngine: AudioEngine = AudioEngine(),
-    private val storageManager: StorageManager = StorageManager()
+    private val storageManager: StorageManager = StorageManager(),
+    private val songRepo: SongRepository? = null
 ) : ScreenModel {
 
     private val _state = MutableStateFlow(RecorderState())
@@ -52,13 +57,11 @@ class RecorderViewModel(
         }
 
         waveformJob = screenModelScope.launch {
-            val waveformBuffer = ArrayDeque<Float>(60)
-            repeat(60) { waveformBuffer.add(0f) }
-
+            val buffer = ArrayDeque<Float>(60).also { q -> repeat(60) { q.add(0f) } }
             audioEngine.getAmplitudeFlow().collect { amplitude ->
-                if (waveformBuffer.size >= 60) waveformBuffer.removeFirst()
-                waveformBuffer.addLast(amplitude)
-                _state.value = _state.value.copy(waveform = waveformBuffer.toList())
+                if (buffer.size >= 60) buffer.removeFirst()
+                buffer.addLast(amplitude)
+                _state.value = _state.value.copy(waveform = buffer.toList())
             }
         }
     }
@@ -68,14 +71,33 @@ class RecorderViewModel(
         waveformJob?.cancel()
         audioEngine.stopRecording()
 
+        val duration = _state.value.durationMs
         val path = storageManager.newRecordingPath(songId, currentTrackId)
         val takeNum = _state.value.takeCount + 1
 
         _state.value = _state.value.copy(
             isRecording = false,
             lastRecordingPath = path,
-            takeCount = takeNum
+            lastTrackId = currentTrackId,
+            takeCount = takeNum,
+            waveform = List(60) { 0f }
         )
+
+        // Persist track in database
+        screenModelScope.launch {
+            songRepo?.addTrackToSong(
+                songId = songId,
+                track = Track(
+                    id = currentTrackId,
+                    songId = songId,
+                    name = "Take $takeNum",
+                    instrument = InstrumentType.GUITAR,
+                    audioFilePath = path,
+                    durationMs = duration,
+                    createdAt = System.currentTimeMillis()
+                )
+            )
+        }
     }
 
     fun playLastRecording() {

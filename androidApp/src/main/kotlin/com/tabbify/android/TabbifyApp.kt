@@ -1,8 +1,9 @@
 package com.tabbify.android
 
 import android.app.Application
-import com.tabbify.platform.appContext
+import com.tabbify.android.sync.SyncWorker
 import com.tabbify.di.initKoin
+import com.tabbify.platform.appContext
 import org.koin.android.ext.koin.androidContext
 
 class TabbifyApp : Application() {
@@ -12,5 +13,6 @@ class TabbifyApp : Application() {
         initKoin {
             androidContext(this@TabbifyApp)
         }
+        SyncWorker.schedule(this)
     }
 }

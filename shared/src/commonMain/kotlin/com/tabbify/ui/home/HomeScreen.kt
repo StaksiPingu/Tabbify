@@ -22,6 +22,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tabbify.data.model.Song
 import com.tabbify.ui.practice.PracticeScreen
+import com.tabbify.ui.settings.SettingsScreen
 import com.tabbify.ui.recorder.RecorderScreen
 import com.tabbify.ui.songbuilder.SongBuilderScreen
 
@@ -41,6 +42,9 @@ class HomeScreen : Screen {
                     actions = {
                         IconButton(onClick = { navigator.push(PracticeScreen()) }) {
                             Icon(Icons.Default.MusicNote, contentDescription = "Übungstools")
+                        }
+                        IconButton(onClick = { navigator.push(SettingsScreen()) }) {
+                            Icon(Icons.Default.Settings, contentDescription = "Einstellungen")
                         }
                     }
                 )

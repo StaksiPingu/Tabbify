@@ -51,4 +51,6 @@ dependencies {
     implementation(project(":shared"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.android)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("io.insert-koin:koin-androidx-workmanager:3.5.6")
 }

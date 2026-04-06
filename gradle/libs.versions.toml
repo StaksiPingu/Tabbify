@@ -20,6 +20,7 @@ bcrypt = "0.10.2"
 kotlin-datetime = "0.6.0"
 uuid = "0.8.4"
 tarsos-dsp = "2.5"
+hikaricp = "5.1.0"
 
 [libraries]
 # Kotlin
@@ -96,6 +97,11 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 hoplite-core = { module = "com.sksamuel.hoplite:hoplite-core", version.ref = "hoplite" }
 hoplite-hocon = { module = "com.sksamuel.hoplite:hoplite-hocon", version.ref = "hoplite" }
 bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikaricp" }
+
+# Audio Analysis (Android only)
+tarsos-dsp-core = { module = "be.tarsos.dsp:core", version.ref = "tarsos-dsp" }
+tarsos-dsp-android = { module = "be.tarsos.dsp:android", version.ref = "tarsos-dsp" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
