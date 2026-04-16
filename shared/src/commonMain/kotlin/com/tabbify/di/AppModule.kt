@@ -36,7 +36,7 @@ val dataModule = module {
     single<SongRepository> { SqlDelightSongRepository(get()) }
     single<SessionRepository> { SqlDelightSessionRepository(get()) }
     single { TabbifyApiClient(API_BASE_URL, get<TokenStorage>()) }
-    single { SyncService(get(), get(), get(), get()) }
+    single { SyncService(get(), get(), get()) }
 }
 
 val domainModule = module {
